@@ -2,3 +2,7 @@
 /lib/
 /bin/
 /.shards/
+
+*.swp
+*.swo
+*~
