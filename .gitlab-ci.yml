@@ -1,14 +1,6 @@
 stages:
-  - mirror
   - test
-
-
-
-Mirror to gh:
-  stage: mirror
-  image: haffmans/git-mirror:latest
-  script:
-  - git-mirror "${CI_PROJECT_DIR}" git@github.com:${GITHUB_REPOSITORY}
+  - mirror
 
 Test:
   stage: test
@@ -16,3 +8,11 @@ Test:
   script:
   - cd "${CI_PROJECT_DIR}"
   - crystal spec -s -t
+
+Mirror to gh:
+  stage: mirror
+  image: haffmans/git-mirror:latest
+  script:
+  - git-mirror "${CI_PROJECT_DIR}" git@github.com:${GITHUB_REPOSITORY}
+
+
