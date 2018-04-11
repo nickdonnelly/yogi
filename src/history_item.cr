@@ -24,8 +24,6 @@ class HistoryItem
   def original_file_contents : String
     @original_contents
   end
-
-
 end
 
 enum HistoryItemType

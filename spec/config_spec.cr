@@ -25,5 +25,21 @@ describe Config do
       conf.change_name("second_name")
       conf.name.should be "second_name"
     end
+
+    it "can be activated" do
+      conf = Config.new("config_name")
+      conf.activate
+
+      conf.active?.should be_true
+    end
+
+    it "can be deactivated" do
+      conf = Config.new "config_name"
+      conf.activate
+      conf.deactivate
+
+      conf.active?.should be_false
+    end
+
   end
 end

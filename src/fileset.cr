@@ -68,9 +68,6 @@ class InternalFile
     @history_items << HistoryItem.new @ident, HistoryItemType::Edit
     @ident = Identity.new
   end
-
-
-    
 end
 
 class FilenameNotFound < Exception

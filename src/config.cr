@@ -9,6 +9,7 @@ class Config
   # characters [a-z][A-Z][0-9], -, and _.
   def initialize(@name : String)
     change_name @name
+    @is_active = false
   end
 
   def change_name(new_name : String)
@@ -17,6 +18,20 @@ class Config
     else
       raise InvalidConfigurationName.new
     end
+  end
+
+  def active?
+    @is_active
+  end
+
+  def activate
+    # TODO
+    @is_active = true
+  end
+
+  def deactivate
+    # TODO
+    @is_active = false
   end
 
   private def verify_filename(name : String) : Bool
