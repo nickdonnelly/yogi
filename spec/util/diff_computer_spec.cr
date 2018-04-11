@@ -8,8 +8,8 @@ describe DiffComputer do
     
   end
 
-  pending "#lcs_len" do
-    it "returns the right length" do
+  context "#lcs_len" do
+    pending "returns the right length" do
       a = "abcdefghijkl"
       b = "acdefgjkl"
 
