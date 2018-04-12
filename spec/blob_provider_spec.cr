@@ -3,6 +3,12 @@ require "../src/blob_provider.cr"
 
 describe BlobProvider do
 
+  it "should raise an error if the instantiation directory doesn't exist" do
+    expect_raises(UnableToWriteFileError) do
+      provider = BlobProvider.new "./doesnt_exist"
+    end
+  end
+
   it "can retrieve configs from blobs on disk by name" do
     provider = BlobProvider.new "./test_blobs"
     config = provider.config_from_blob "test_config"

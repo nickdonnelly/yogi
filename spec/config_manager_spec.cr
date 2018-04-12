@@ -14,6 +14,10 @@ describe ConfigManager do
   end
 
   context "#load_disk_data" do
+    it "should load the current config name" do
+      manager.load_disk_data "./test_blobs"
+      manager.current_config_name.should eq "test_config"
+    end
   end
 
 
