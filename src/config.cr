@@ -20,20 +20,6 @@ class Config
     end
   end
 
-  def active?
-    @is_active
-  end
-
-  def activate
-    # TODO
-    @is_active = true
-  end
-
-  def deactivate
-    # TODO
-    @is_active = false
-  end
-
   private def verify_filename(name : String) : Bool
     matches = VALID_NAMES.match name
     if matches.nil?
