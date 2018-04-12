@@ -1,5 +1,6 @@
 require "io"
 require "file"
+require "dir"
 
 require "cannon"
 
@@ -10,7 +11,7 @@ class BlobProvider
   # This will raise a pre-emptive `UnableToWriteFileError` if the directory doesn't exist
   # or exists but is not writable.
   def initialize(@directory : String)
-    if !File.exists?(@directory) || !File.writable?(@directory)
+    if !Dir.exists?(@directory) || !File.writable?(@directory)
       raise UnableToWriteFileError.new
     end
   end
