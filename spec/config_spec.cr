@@ -25,6 +25,19 @@ describe Config do
       conf.change_name("second_name")
       conf.name.should be "second_name"
     end
-
   end
+
+  context "files" do
+    it "has a list of current file paths" do
+      conf = Config.new("first_name")
+      conf.files.size.should eq 0
+    end
+
+    it "should let files be added" do
+      conf = Config.new("first_name")
+      conf.add "filename"
+      conf.files.size.should eq 1
+    end
+  end
+
 end

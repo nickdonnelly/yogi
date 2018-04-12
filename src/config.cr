@@ -4,14 +4,14 @@ class Config
   include Cannon::Auto
 
   getter :name
+  getter :files
 
   private VALID_NAMES = /[a-zA-Z0-9_-]*/
 
   # Creates a new configuration with the given name. *@name* must consist of
   # characters [a-z][A-Z][0-9], -, and _.
-  def initialize(@name : String, @is_active : Bool = false)
+  def initialize(@name : String, @is_active : Bool = false, @files : Array(String) = [] of String)
     change_name @name
-    @is_active = false
   end
 
   def change_name(new_name : String)
@@ -20,6 +20,10 @@ class Config
     else
       raise InvalidConfigurationName.new
     end
+  end
+
+  def add(filename : String)
+    @files << filename
   end
 
   private def verify_filename(name : String) : Bool
