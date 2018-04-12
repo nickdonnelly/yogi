@@ -38,6 +38,6 @@ describe Config do
       conf.add "filename"
       conf.files.size.should eq 1
     end
-  end
 
+  end
 end
