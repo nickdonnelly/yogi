@@ -3,8 +3,16 @@ require "../src/blob_provider.cr"
 
 describe BlobProvider do
 
-  it "can write blobs to disk" do
+  it "can retrieve configs from blobs on disk by name" do
+    provider = BlobProvider.new "./test_blobs"
+    config = provider.config_from_blob "test_config"
+    config.name.should eq "test_name"
+  end
 
+  it "can write configs to blobs" do
+    provider = BlobProvider.new "./test_blobs"
+    config = Config.new "test_config2"
+    provider.write_config_blob(config).should be_true
   end
 
 end

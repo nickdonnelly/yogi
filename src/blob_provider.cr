@@ -11,6 +11,31 @@ class BlobProvider
     
   end
 
+  def config_from_blob(blob_name : String) : Config
+    blob_location = "#{@directory}/#{blob_name}.blob"
+
+    if !File.exists?(blob_location)
+      raise BlobDoesntExistError.new
+    end
+
+    blob = Blob.from_file blob_location
+    blob.into_config
+  end
+
+  def write_config_blob(config : Config) : Bool
+    if !File.writable?(@directory)
+      return false
+    end
+
+    blob_location = "#{@directory}/#{config.name}.blob"
+    blob = Blob.from_config config
+
+    File.write blob_location, blob.data
+    true
+  rescue IO::Error
+    raise UnableToWriteFileError.new
+  end
+
 end
 
 struct Blob
@@ -31,6 +56,8 @@ struct Blob
     Blob.new(bytes)
   end
 
+  # It is assumed you check for the existence of the file before calling this
+  # function
   def self.from_file(filename : String) : self
     file = File.open(filename)
     bytes = Bytes.new size: file.size
@@ -69,4 +96,10 @@ class DeserializationDataInvalidError < Exception
 end
 
 class UnableToReadFileError < Exception
+end
+
+class UnableToWriteFileError < Exception
+end
+
+class BlobDoesntExistError < Exception
 end
