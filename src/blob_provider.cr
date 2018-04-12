@@ -7,8 +7,12 @@ require "./config"
 
 class BlobProvider
 
+  # This will raise a pre-emptive `UnableToWriteFileError` if the directory doesn't exist
+  # or exists but is not writable.
   def initialize(@directory : String)
-    
+    if !File.exists?(@directory) || !File.writable?(@directory)
+      raise UnableToWriteFileError
+    end
   end
 
   def config_from_blob(blob_name : String) : Config
@@ -45,9 +49,9 @@ struct Blob
     io = IO::Memory.new
     Cannon.encode io, config
     io.rewind # back to start of iterator
-    bytes = Bytes.new size: io.size
 
     # Check right number of bytes
+    bytes = Bytes.new size: io.size
     result = io.read_fully(bytes)
     if result != bytes.size
       raise BlobByteCountError.new
