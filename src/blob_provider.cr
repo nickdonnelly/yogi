@@ -11,7 +11,7 @@ class BlobProvider
   # or exists but is not writable.
   def initialize(@directory : String)
     if !File.exists?(@directory) || !File.writable?(@directory)
-      raise UnableToWriteFileError
+      raise UnableToWriteFileError.new
     end
   end
 
