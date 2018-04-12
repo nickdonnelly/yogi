@@ -1,11 +1,15 @@
+require "cannon"
+
 class Config
+  include Cannon::Auto
+
   getter :name
 
   private VALID_NAMES = /[a-zA-Z0-9_-]*/
 
   # Creates a new configuration with the given name. *@name* must consist of
   # characters [a-z][A-Z][0-9], -, and _.
-  def initialize(@name : String)
+  def initialize(@name : String, @is_active : Bool = false)
     change_name @name
     @is_active = false
   end
