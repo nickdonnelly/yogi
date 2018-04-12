@@ -1,5 +1,3 @@
-require "./fileset"
-
 class Config
   getter :name
 
