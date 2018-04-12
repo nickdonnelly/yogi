@@ -1,4 +1,5 @@
 require "io"
+require "file"
 
 require "cannon"
 
@@ -24,10 +25,24 @@ struct Blob
     # Check right number of bytes
     result = io.read_fully(bytes)
     if result != bytes.size
-      raise SerializationByteCountError.new
+      raise BlobByteCountError.new
     end
 
     Blob.new(bytes)
+  end
+
+  def self.from_file(filename : String) : self
+    file = File.open(filename)
+    bytes = Bytes.new size: file.size
+    num = file.read(bytes)
+
+    if num != bytes.size
+      raise BlobByteCountError.new
+    end
+
+    Blob.new bytes
+  rescue IO::Error
+    raise UnableToReadFileError.new
   end
 
   def data : Bytes
@@ -38,6 +53,8 @@ struct Blob
     io = IO::Memory.new @bytes
     decoded = Cannon.decode io, Config
     decoded
+  rescue 
+    raise DeserializationDataInvalidError.new
   end
 
   protected def initialize(@bytes : Bytes)
@@ -45,5 +62,11 @@ struct Blob
 
 end
 
-class SerializationByteCountError < Exception
+class BlobByteCountError < Exception
+end
+
+class DeserializationDataInvalidError < Exception
+end
+
+class UnableToReadFileError < Exception
 end

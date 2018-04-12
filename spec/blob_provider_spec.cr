@@ -28,4 +28,17 @@ describe Blob do
     config.name.should eq "test_name"
   end
 
+  it "can get blobs from disk" do
+    blob = Blob.from_file "./test_blobs/test_config.blob"
+    config = blob.into_config
+    config.name.should eq "test_name"
+  end
+
+  it "raises an exception if deserialization fails" do
+    expect_raises(DeserializationDataInvalidError) do
+    blob = Blob.from_file "./test_blobs/bad_blob.blob"
+    config = blob.into_config
+    end
+  end
+
 end
