@@ -3,6 +3,8 @@ require "../src/blob_provider.cr"
 
 describe BlobProvider do
 
+  config = Config.new "test_name"
+
   it "should raise an error if the instantiation directory doesn't exist" do
     expect_raises(UnableToWriteFileError) do
       provider = BlobProvider.new "./doesnt_exist"
@@ -11,7 +13,8 @@ describe BlobProvider do
 
   it "can retrieve configs from blobs on disk by name" do
     provider = BlobProvider.new "./test_blobs"
-    config = provider.config_from_blob "test_config"
+    provider.write_config_blob config
+    config = provider.config_from_blob "test_name"
     config.name.should eq "test_name"
   end
 
@@ -44,8 +47,7 @@ describe Blob do
 
   it "can get blobs from disk" do
     blob = Blob.from_file "./test_blobs/test_config.blob"
-    config = blob.into_config
-    config.name.should eq "test_name"
+    blob.data.size.should be > 0
   end
 
   it "raises an exception if deserialization fails" do

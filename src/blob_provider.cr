@@ -25,6 +25,8 @@ class BlobProvider
 
     blob = Blob.from_file blob_location
     blob.into_config
+  rescue
+    raise DeserializationDataInvalidError.new
   end
 
   def write_config_blob(config : Config) : Bool
