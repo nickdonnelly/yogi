@@ -4,11 +4,29 @@ require "../src/config_manager"
 describe ConfigManager do
   manager : ConfigManager = ConfigManager.new
   provider : BlobProvider = BlobProvider.new "./test_blobs"
+  config : Config = Config.new "default"
+  config2 : Config = Config.new "default"
 
   Spec.before_each do
     manager = ConfigManager.new
+    manager.set_blob_dir "./test_blobs"
     config = Config.new "test_config"
+    config.add "./test_blobs/files/test_1.txt", File.read("./test_blobs/files/test_1.txt")
+    config.add "./test_blobs/files/test_2.txt", File.read("./test_blobs/files/test_2.txt")
+    config.add "./test_blobs/files/test_3.txt", File.read("./test_blobs/files/test_3.txt")
+
+    config2 = Config.new "test_config2"
+    config2.add "./test_blobs/files/test_11.txt", "some text"
+    config2.add "./test_blobs/files/test_22.txt", "some text 2"
+    config2.add "./test_blobs/files/test_33.txt", "some text 3"
+
     provider.write_config_blob config
+    provider.write_config_blob config2
+    manager.activate_by_name "test_config"
+  end
+
+  Spec.after_each do
+    manager.activate_by_name "test_config"
   end
 
   it "initializes a config" do
@@ -30,5 +48,24 @@ describe ConfigManager do
     end
   end
 
+  context "#activate_by_name" do
+    it "sets the current config" do
+      manager.set_current config
+      manager.current_config.should eq config
+      manager.config_ready?.should be_true
+    end
+
+    it "reflects the new config on disk" do
+      manager.activate_by_name "test_config2"
+      File.exists?("./test_blobs/files/test_1.txt").should be_false
+      File.exists?("./test_blobs/files/test_11.txt").should be_true
+    end
+
+    it "errors on activating of non-existant config" do
+      expect_raises(ConfigActivationFailure) do
+        manager.activate_by_name "doesnt_exist"
+      end
+    end
+  end
 
 end

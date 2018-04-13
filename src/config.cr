@@ -15,6 +15,8 @@ class Config
     change_name @name
   end
 
+  # Changes the name. This __does not__ guarantee the deletion of blobs
+  # with the old name on disk.
   def change_name(new_name : String)
     if verify_filename(new_name) 
       @name = new_name 
@@ -51,6 +53,22 @@ class Config
     end
 
     f.not_nil!
+  end
+
+  def deactivate!
+    @files.each do |filemem|
+      begin
+        File.delete filemem.filename
+      rescue Errno
+        #raise ConfigDeactivationFailure.new
+      end
+    end
+  end
+
+  def activate!
+    @files.each do |filemem|
+      File.write filemem.filename, filemem.content
+    end
   end
 
   def contains?(filepath : String) : Bool
