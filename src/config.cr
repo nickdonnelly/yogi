@@ -27,10 +27,39 @@ class Config
     @files << Filemember.new filename, contents
   end
 
+  def add(file : Filemember)
+    @files << file
+  end
+
   def delete(filename : String)
-    @files.select! do |filemem|
-      filemem.filename != filename
+    @files.reject! do |filemem|
+      filemem.filename == filename
     end
+  end
+
+  def pluck_file(filename : String) : Filemember
+    if !contains?(filename)
+      raise FileNotInConfig.new
+    end
+
+    f : Filemember | Nil = nil
+    @files.reject! do |filemem|
+      if filemem.filename == filename
+        f = filemem
+      end
+      filemem.filename == filename
+    end
+
+    f.not_nil!
+  end
+
+  def contains?(filepath : String) : Bool
+    @files.each do |filemem|
+      if filemem.filename == filepath
+        return true
+      end
+    end
+    false
   end
 
   private def verify_filename(name : String) : Bool
@@ -55,4 +84,7 @@ struct Filemember
 end
 
 class InvalidConfigurationName < Exception
+end
+
+class FileNotInConfig < Exception
 end

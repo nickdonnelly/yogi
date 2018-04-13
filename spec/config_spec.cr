@@ -46,5 +46,13 @@ describe Config do
       conf.delete "filename"
       conf.files.size.should eq 0
     end
+
+    it "should let files be plucked" do
+      conf = Config.new "some_name"
+      conf.add "filename", ""
+      f = conf.pluck_file "filename"
+      f.should_not be_nil
+      conf.files.size.should eq 0
+    end
   end
 end

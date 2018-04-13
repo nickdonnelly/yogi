@@ -36,12 +36,7 @@ class ConfigManager
   end
 
   def current_contains?(filepath : String) : Bool
-    @current_config.files.each do |filemem|
-      if filemem.filename == filepath
-        return true
-      end
-    end
-    false
+    @current_config.contains? filepath
   end
 
   private def get_current_name(directory : String) : String

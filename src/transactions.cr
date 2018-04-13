@@ -1,16 +1,23 @@
+require "./identity"
+
 require "file"
 
 module Transactions
 
   # The generic type involved in adding, deleting, editing files.
   abstract class Transaction
+    getter :identity
     @committed : Bool = false
 
     def initialize(@config : Config)
       @committed = false
+      @identity = Identity.new
     end
 
     def commit
+      if @committed
+        raise DoubleCommitError.new
+      end
       @committed = true
     end
 
@@ -26,44 +33,6 @@ module Transactions
       "unknown transaction"
     end
   end
-
-  class AddNewFileTransaction < Transaction
-
-    def initialize(@filename : String, @config : Config)
-      if !File.exists?(@filename)
-        raise InvalidTransactionError.new
-      end
-    end
-
-    def commit
-      if @committed
-        raise DoubleCommitError.new
-      end
-
-      contents = File.read(@filename)
-      @config.add @filename, contents
-      super
-    rescue e
-      if !e.is_a?(DoubleCommitError)
-        revert
-      else
-        raise DoubleCommitError.new # re-raise to prevent the rescue from suppressing
-      end
-    end
-
-    def revert
-      @config.delete @filename
-      super
-    rescue
-      raise TransactionFailedUngracefully.new
-    end
-
-
-    def message
-      "add #{@filename}"
-    end
-  end
-
 
   class InvalidTransactionError < Exception
   end
