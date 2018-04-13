@@ -10,8 +10,17 @@ module Transactions
       @committed = false
     end
 
-    abstract def commit
-    abstract def revert
+    def commit
+      @committed = true
+    end
+
+    def revert
+      @committed = false
+    end
+
+    def finalize : Config
+      @config
+    end
 
     def message() : String
       "unknown transaction"
@@ -31,8 +40,9 @@ module Transactions
         raise DoubleCommitError.new
       end
 
-      @config.add @filename
-      @committed = true
+      contents = File.read(@filename)
+      @config.add @filename, contents
+      super
     rescue e
       if !e.is_a?(DoubleCommitError)
         revert
@@ -42,21 +52,17 @@ module Transactions
     end
 
     def revert
-      @config.files.delete @filename
-      @committed = false
+      @config.delete @filename
+      super
     rescue
       raise TransactionFailedUngracefully.new
     end
 
-    def finalize : Config
-      @config
-    end
 
     def message
       "add #{@filename}"
     end
   end
-
 
 
   class InvalidTransactionError < Exception

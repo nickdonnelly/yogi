@@ -35,9 +35,16 @@ describe Config do
 
     it "should let files be added" do
       conf = Config.new("first_name")
-      conf.add "filename"
+      conf.add "filename", "test_content"
       conf.files.size.should eq 1
+      conf.files[0].content.should eq "test_content"
     end
 
+    it "should let files be deleted" do
+      conf = Config.new "some_name"
+      conf.add "filename", ""
+      conf.delete "filename"
+      conf.files.size.should eq 0
+    end
   end
 end

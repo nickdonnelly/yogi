@@ -1,4 +1,5 @@
 require "spec"
+require "file"
 require "../src/transactions"
 require "../src/config"
 
@@ -25,10 +26,12 @@ describe Transactions do
     end
 
     it "should add a new file to the config" do
+      contents = File.read "./test_blobs/files/test_1.txt"
       t = AddNewFileTransaction.new "./test_blobs/files/test_1.txt", config
       t.commit
       new_config = t.finalize
       new_config.files.size.should eq 1
+      new_config.files[0].content.should eq contents
     end
 
     it "shouldn't allow double commits" do
@@ -46,6 +49,5 @@ describe Transactions do
       new_config = t.finalize
       new_config.files.size.should eq 0
     end
-    
   end
 end

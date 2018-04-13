@@ -36,8 +36,8 @@ class ConfigManager
   end
 
   def current_contains?(filepath : String) : Bool
-    @current_config.files.each do |file|
-      if file == filepath
+    @current_config.files.each do |filemem|
+      if filemem.filename == filepath
         return true
       end
     end

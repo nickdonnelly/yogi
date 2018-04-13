@@ -10,7 +10,8 @@ class Config
 
   # Creates a new configuration with the given name. *@name* must consist of
   # characters [a-z][A-Z][0-9], -, and _.
-  def initialize(@name : String, @is_active : Bool = false, @files : Array(String) = [] of String)
+  def initialize(@name : String, @is_active : Bool = false, 
+                 @files : Array(Filemember) = [] of Filemember)
     change_name @name
   end
 
@@ -22,8 +23,14 @@ class Config
     end
   end
 
-  def add(filename : String)
-    @files << filename
+  def add(filename : String, contents : String)
+    @files << Filemember.new filename, contents
+  end
+
+  def delete(filename : String)
+    @files.select! do |filemem|
+      filemem.filename != filename
+    end
   end
 
   private def verify_filename(name : String) : Bool
@@ -35,6 +42,16 @@ class Config
     end
   end
 
+end
+
+struct Filemember
+  property :content
+  property :filename
+
+  include Cannon::Auto
+
+  def initialize(@filename : String, @content : String)
+  end
 end
 
 class InvalidConfigurationName < Exception
