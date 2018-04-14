@@ -39,6 +39,21 @@ class Config
     end
   end
 
+  def get(filename : String) : Filemember
+    if !contains?(filename)
+      raise FileNotInConfig.new
+    end
+
+    files.each do |filemem|
+      if filemem.filename == filename
+        return filemem
+      end
+    end
+
+    raise FileNotInConfig.new
+    Filemember.new "", ""
+  end
+
   def pluck_file(filename : String) : Filemember
     if !contains?(filename)
       raise FileNotInConfig.new
