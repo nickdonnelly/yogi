@@ -14,8 +14,8 @@ describe BlobProvider do
   it "can retrieve configs from blobs on disk by name" do
     provider = BlobProvider.new "./test_blobs"
     provider.write_config_blob config
-    config = provider.config_from_blob "test_name"
-    config.name.should eq "test_name"
+    config = provider.config_from_blob "test_config"
+    config.name.should eq "test_config"
   end
 
   it "can write configs to blobs" do
@@ -51,9 +51,9 @@ describe Blob do
   end
 
   it "raises an exception if deserialization fails" do
-    expect_raises(DeserializationDataInvalidError) do
-    blob = Blob.from_file "./test_blobs/bad_blob.blob"
-    config = blob.into_config
+    expect_raises(Exception) do
+      blob = Blob.from_file "./test_blobs/bad_blob.blob"
+      config = blob.into_config
     end
   end
 

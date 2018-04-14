@@ -1,6 +1,7 @@
 require "io"
 require "file"
 require "dir"
+require "gzip"
 
 require "cannon"
 
@@ -36,12 +37,13 @@ class BlobProvider
 
     blob_location = "#{@directory}/#{config.name}.blob"
     blob = Blob.from_config config
+    blob.write blob_location
 
-    File.write blob_location, blob.data
     true
   rescue IO::Error
     raise UnableToWriteFileError.new
   end
+
 
 end
 
@@ -67,10 +69,10 @@ struct Blob
   # function
   def self.from_file(filename : String) : self
     file = File.open(filename)
-    bytes = Bytes.new size: file.size
+    bytes = Bytes.new(size: file.size)
     num = file.read(bytes)
 
-    if num != bytes.size
+    if num != bytes.size 
       raise BlobByteCountError.new
     end
 
@@ -83,17 +85,21 @@ struct Blob
     @bytes
   end
 
+  # Convert the blob into a Config object
   def into_config : Config
     io = IO::Memory.new @bytes
     decoded = Cannon.decode io, Config
     decoded
-  rescue 
+  rescue
     raise DeserializationDataInvalidError.new
+  end
+
+  def write(blob_location : String)
+    File.write blob_location, @bytes
   end
 
   protected def initialize(@bytes : Bytes)
   end
-
 end
 
 class BlobByteCountError < Exception
