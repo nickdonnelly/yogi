@@ -67,6 +67,10 @@ class Config
 
   def activate!
     @files.each do |filemem|
+      # Make path if it doesn't exist
+      if !Dir.exists?(File.dirname(filemem.filename))
+        Dir.mkdir_p File.dirname(filemem.filename)
+      end
       File.write filemem.filename, filemem.content
     end
   end

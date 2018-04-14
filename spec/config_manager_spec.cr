@@ -61,6 +61,15 @@ describe ConfigManager do
       File.exists?("./test_blobs/files/test_11.txt").should be_true
     end
 
+    it "makes paths that don't exist" do
+      config = Config.new "third_config"
+      config.add "./test_blobs/files/nested/test_1.txt", File.read("./test_blobs/files/test_1.txt")
+      provider.write_config_blob config
+
+      manager.activate_by_name "third_config"
+      Dir.exists?("./test_blobs/files/nested").should be_true
+    end
+
     it "errors on activating of non-existant config" do
       expect_raises(ConfigActivationFailure) do
         manager.activate_by_name "doesnt_exist"
