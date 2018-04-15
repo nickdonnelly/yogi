@@ -4,3 +4,7 @@ shards:
     github: Papierkorb/cannon
     version: 0.2.1
 
+  commander:
+    github: mrrooijen/commander
+    version: 0.3.3
+

@@ -15,6 +15,11 @@ class BlobProvider
     if !Dir.exists?(@directory) || !File.writable?(@directory)
       raise UnableToWriteFileError.new
     end
+
+    if !File.file?("#{@directory}/default.blob")
+      default = Config.new "default"
+      write_config_blob default
+    end
   end
 
   def config_from_blob(blob_name : String) : Config
