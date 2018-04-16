@@ -8,7 +8,7 @@ require "colorize"
 
 module Yogi
   
-  def self.add(options : Commander::Options, arguments : Array(String))
+  def self.add_command(options : Commander::Options, arguments : Array(String))
     manager = ConfigManager.new
     manager.load_disk_data File.expand_path("~/.yogi/blobs")
     

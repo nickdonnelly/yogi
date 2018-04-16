@@ -33,7 +33,7 @@ describe BlobProvider do
     transaction.commit
     config = transaction.finalize
     provider.write_transaction transaction, config
-    config_revision = config.latest_commit.not_nil![0].shortened
+    config_revision = config.latest_commit[0].shortened
     File.exists?("./test_blobs/test_config/#{config_revision}.blob").should be_true
     File.delete("./test_blobs/test_config/#{config_revision}.blob")
   end

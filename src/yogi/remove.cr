@@ -31,7 +31,7 @@ module Yogi
     files.each do |filename|
       begin
         manager.remove_from_current filename
-        puts "added #{filename.colorize.yellow} to #{manager.current_config_name.colorize.blue}"
+        puts "removed #{filename.colorize.yellow} from #{manager.current_config_name.colorize.blue}"
       rescue Transactions::InvalidTransactionError
         puts "remove transaction failed for file #{filename.colorize.red}, cancelling"
         exit(-1)

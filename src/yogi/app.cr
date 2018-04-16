@@ -1,8 +1,4 @@
-require "./show"
-require "./add"
-require "./remove"
-require "./new"
-require "./delete"
+require "./*"
 
 require "commander"
 
@@ -21,7 +17,7 @@ module Yogi
         list_current.use = "show"
         list_current.long = "print the given configuration"
         list_current.run do |options, args|
-          show(options, args)
+          show_command(options, args)
         end
       end
 
@@ -47,6 +43,9 @@ module Yogi
           delete_config(args)
         end
       end
+
+      cmd.commands.add get_hist_command("h")
+      cmd.commands.add get_hist_command("hist")
     end
 
     cli
@@ -56,6 +55,25 @@ module Yogi
     block
   end
 
+  def self.get_hist_command(use : String) : Commander::Command
+    hist = Commander::Command.new(true)
+    hist.use = use
+    hist.long = "show the recent history of the current config"
+    hist.short = hist.long
+    hist.flags.add get_config_flag
+    hist.flags.add do |max_entries|
+      max_entries.name = "num_entries"
+      max_entries.short = "-n"
+      max_entries.long = "--num-entries"
+      max_entries.default = 10
+      max_entries.description = "the maximum number of entries to display."
+    end
+    hist.run do |options, args|
+      history_command(options, args)
+    end
+    hist
+  end
+
   def self.get_add_command(use : String) : Commander::Command
     add = Commander::Command.new(true)
     add.use = use
@@ -63,7 +81,7 @@ module Yogi
     add.short = add.long
     add.flags.add get_config_flag
     add.run do |options, args|
-      add(options, args)
+      add_command(options, args)
     end
     add
   end

@@ -7,7 +7,7 @@ require "colorize"
 
 module Yogi
   
-  def self.show(options : Commander::Options, arguments : Array(String))
+  def self.show_command(options : Commander::Options, arguments : Array(String))
     manager = ConfigManager.new
     manager.set_blob_dir File.expand_path("~/.yogi/blobs")
     
@@ -39,27 +39,31 @@ module Yogi
              else
                manager.try_get_by_name config_name
              end
-
+    not_found = "couldn't fetch config '#{config_name}'".colorize.red
     if config.nil?
-      puts "config #{config_name} not found".colorize.red
-    else
-      puts "Name: #{config_name.colorize.blue}"
-      puts "Revision: #{config.get_identity.identifier.colorize.yellow}"
-      puts "Current configuration contains:"
-      
-      if config.files.size == 0
-        puts "<no files>".colorize.yellow
-        return
-      end
-
-      config.files.sort! do |a, b|
-        a.filename.compare b.filename
-      end
-
-      config.files.each do |filemem|
-        puts "  #{filemem.filename.colorize.green} "
-      end
+      puts not_found
     end
+    config = config.not_nil!
+
+    puts "Name: #{config_name.colorize.blue}"
+    puts "Revision: #{config.latest_commit[0].shortened.colorize.yellow} \
+      - #{config.latest_commit[1].colorize.green}"
+    puts "Current configuration contains the following files:"
+    
+    if config.files.size == 0
+      puts "<no files>".colorize.yellow
+      return
+    end
+
+    config.files.sort! do |a, b|
+      a.filename.compare b.filename
+    end
+
+    config.files.each do |filemem|
+      puts "  #{filemem.filename.colorize.green} "
+    end
+  rescue ConfigFetchError
+    puts not_found
   end
 
 end

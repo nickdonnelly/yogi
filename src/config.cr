@@ -10,6 +10,7 @@ class Config
 
   getter :name
   getter :files
+  getter :commit_identities
 
   private VALID_NAMES = /[a-zA-Z0-9_-]*/
 
@@ -23,10 +24,10 @@ class Config
     change_name @name
   end
 
-  def latest_commit : Tuple(Identity, String) | Nil
+  def latest_commit : Tuple(Identity, String)
     @commit_identities.last
   rescue
-    nil
+    {Identity.new, "create config"}
   end
 
   # Changes the name. This __does not__ guarantee the deletion of blobs

@@ -73,7 +73,7 @@ describe Config do
       t2.commit
       conf = t2.finalize
 
-      conf.latest_commit.not_nil![0].should eq t2.identity
+      conf.latest_commit[0].should eq t2.identity
     end
   end
 end

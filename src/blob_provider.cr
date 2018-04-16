@@ -62,7 +62,7 @@ class BlobProvider
       Dir.mkdir_p("#{@directory}/#{config.name}")
     end
     blob = Blob.from_transaction transaction
-    ident = config.latest_commit.not_nil![0].shortened
+    ident = config.latest_commit[0].shortened
     location = "#{@directory}/#{config.name}/#{ident}.blob"
     blob.write location
   end
