@@ -44,8 +44,7 @@ module Yogi
       puts "config #{config_name} not found".colorize.red
     else
       puts "Name: #{config_name.colorize.blue}"
-      # TODO
-      #puts "Revision: #{config.revision.colorize.yellow}"
+      puts "Revision: #{config.get_identity.identifier.colorize.yellow}"
       puts "Current configuration contains:"
       
       if config.files.size == 0

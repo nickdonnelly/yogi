@@ -1,18 +1,32 @@
+require "./transactions"
+require "./transactions/*"
+require "./identity"
+
 require "cannon"
 
 class Config
   include Cannon::Auto
+  include Transactions
 
   getter :name
   getter :files
 
   private VALID_NAMES = /[a-zA-Z0-9_-]*/
 
+  def_clone
+
   # Creates a new configuration with the given name. *@name* must consist of
   # characters [a-z][A-Z][0-9], -, and _.
   def initialize(@name : String, @is_active : Bool = false, 
-                 @files : Array(Filemember) = [] of Filemember)
+                 @files : Array(Filemember) = [] of Filemember,
+                 @commit_identities : Array(Tuple(Identity, String)) = [] of Tuple(Identity, String))
     change_name @name
+  end
+
+  def latest_commit : Tuple(Identity, String) | Nil
+    @commit_identities.last
+  rescue
+    nil
   end
 
   # Changes the name. This __does not__ guarantee the deletion of blobs
@@ -23,6 +37,13 @@ class Config
     else
       raise InvalidConfigurationName.new
     end
+  end
+
+  def get_identity : Identity
+    #@commits.last.identity
+    Identity.new
+  rescue
+    Identity.new
   end
 
   def add(filename : String, contents : String)
@@ -105,6 +126,10 @@ class Config
     false
   end
 
+  def add_transaction(transaction : Transaction)
+    @commit_identities.push({transaction.identity, transaction.message})
+  end
+
   private def verify_filename(name : String) : Bool
     matches = VALID_NAMES.match name
     if matches.nil?
@@ -120,6 +145,8 @@ struct Filemember
   property :content
   property :filename
 
+  def_clone
+
   include Cannon::Auto
 
   def initialize(@filename : String, @content : String)
@@ -127,6 +154,9 @@ struct Filemember
 end
 
 class InvalidConfigurationName < Exception
+end
+
+class UnknownTransactionType < Exception
 end
 
 class FileNotInConfig < Exception

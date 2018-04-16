@@ -1,7 +1,14 @@
 require "time"
 require "openssl"
 
+require "cannon"
+
 class Identity
+
+  include Cannon::Auto
+
+  def_clone
+
   getter :identifier
 
   @identifier : String
@@ -9,8 +16,7 @@ class Identity
   # Automatically generates a new identity on instantiation. Hashes are
   # 64 characters long to make collisions highly unlikely, but no-collision
   # is not guaranteed.
-  def initialize
-    @identifier = generate_ident
+  def initialize(@identifier = generate_ident)
   end
 
   def shortened

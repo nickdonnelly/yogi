@@ -7,8 +7,9 @@ require "cannon"
 
 require "./config"
 
-class BlobProvider
+include Transactions
 
+class BlobProvider
   # This will raise a pre-emptive `UnableToWriteFileError` if the directory doesn't exist
   # or exists but is not writable.
   def initialize(@directory : String)
@@ -56,6 +57,15 @@ class BlobProvider
     raise UnableToWriteFileError.new
   end
 
+  def write_transaction(transaction : Transaction, config : Config)
+    if !Dir.exists?("#{@directory}/#{config.name}")
+      Dir.mkdir_p("#{@directory}/#{config.name}")
+    end
+    blob = Blob.from_transaction transaction
+    ident = config.latest_commit.not_nil![0].shortened
+    location = "#{@directory}/#{config.name}/#{ident}.blob"
+    blob.write location
+  end
 
 end
 
@@ -68,6 +78,28 @@ struct Blob
     io.rewind # back to start of iterator
 
     # Check right number of bytes
+    bytes = Bytes.new size: io.size
+    result = io.read_fully(bytes)
+    if result != bytes.size
+      raise BlobByteCountError.new
+    end
+
+    Blob.new(bytes)
+  end
+
+  def self.from_transaction(transaction : Transaction) : self
+    io = IO::Memory.new
+    if transaction.is_a? AddNewFileTransaction
+      Cannon.encode io, transaction.without_config.as(AddNewFileTransaction)
+    elsif transaction.is_a? RemoveFileTransaction
+      Cannon.encode io, transaction.without_config.as(RemoveFileTransaction)
+    elsif transaction.is_a? EditFileTransaction
+      Cannon.encode io, transaction.without_config.as(EditFileTransaction)
+    else
+      raise UnknownTransactionType.new
+    end
+
+    io.rewind
     bytes = Bytes.new size: io.size
     result = io.read_fully(bytes)
     if result != bytes.size
@@ -124,6 +156,9 @@ class UnableToReadFileError < Exception
 end
 
 class UnableToWriteFileError < Exception
+end
+
+class UnknownTransactionType < Exception
 end
 
 class BlobDoesntExistError < Exception

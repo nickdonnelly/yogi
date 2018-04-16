@@ -1,5 +1,6 @@
 require "spec"
 require "../src/config"
+require "../src/transactions/add_file_transaction"
 
 describe Config do
   context "names" do
@@ -53,6 +54,26 @@ describe Config do
       f = conf.pluck_file "filename"
       f.should_not be_nil
       conf.files.size.should eq 0
+    end
+  end
+
+  context "transactions" do
+    it "contains a list of commits" do
+      conf = Config.new "some_name"
+      #conf.commits.should_not be_nil
+    end
+
+    it "lets commits be added stackwise" do
+      conf = Config.new "some_name"
+      t1 = Transactions::AddNewFileTransaction.new "./test_blobs/files/test_1.txt", conf
+      t1.commit
+      conf = t1.finalize
+
+      t2 = Transactions::AddNewFileTransaction.new "./test_blobs/files/test_2.txt", conf
+      t2.commit
+      conf = t2.finalize
+
+      conf.latest_commit.not_nil![0].should eq t2.identity
     end
   end
 end

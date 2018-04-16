@@ -8,18 +8,23 @@ module Transactions
     @old_content : String = ""
 
     def initialize(@filename : String, @config : Config)
-      if !File.exists?(@filename) || !@config.contains?(@filename)
+      if !File.exists?(@filename) || !@config.not_nil!.contains?(@filename)
         raise InvalidTransactionError.new
       end
-      @old_content = @config.get(@filename).content
+      @old_content = @config.not_nil!.get(@filename).content
       super @config
+    end
+
+    # DO NOT USE. this is for deserialization.
+    def initialize(@committed : Bool, @config : Config, @identity : Identity, 
+                  @old_content : String, @filename : String)
     end
 
     def commit
       super
-      file = @config.pluck_file(@filename)
+      file = @config.not_nil!.pluck_file(@filename)
       file.content = File.read(@filename)
-      @config.add file
+      @config.not_nil!.add file
     rescue e
       if !e.is_a?(DoubleCommitError)
         revert
@@ -30,9 +35,9 @@ module Transactions
 
     def revert
       super
-      file = @config.pluck_file(@filename)
+      file = @config.not_nil!.pluck_file(@filename)
       file.content = @old_content
-      @config.add file
+      @config.not_nil!.add file
     rescue
       raise TransactionFailedUngracefully.new
     end

@@ -1,5 +1,7 @@
+require "file"
 require "spec"
 require "../src/blob_provider.cr"
+require "../src/transactions/add_file_transaction"
 
 describe BlobProvider do
 
@@ -24,11 +26,30 @@ describe BlobProvider do
     provider.write_config_blob(config).should be_true
   end
 
+  it "can write transactions to blobs" do
+    provider = BlobProvider.new "./test_blobs"
+    config = Config.new "test_config"
+    transaction = Transactions::AddNewFileTransaction.new "./test_blobs/files/test_1.txt", config
+    transaction.commit
+    config = transaction.finalize
+    provider.write_transaction transaction, config
+    config_revision = config.latest_commit.not_nil![0].shortened
+    File.exists?("./test_blobs/test_config/#{config_revision}.blob").should be_true
+    File.delete("./test_blobs/test_config/#{config_revision}.blob")
+  end
+
 end
 
 describe Blob do
   it "can be created from a config" do
     blob = Blob.from_config Config.new("test_name")
+    blob.should be_a(Blob)
+  end
+
+  it "can be created from a transaction" do
+    config = Config.new "test_config"
+    transaction = Transactions::AddNewFileTransaction.new "./test_blobs/files/test_1.txt", config
+    blob = Blob.from_transaction(transaction)
     blob.should be_a(Blob)
   end
 
@@ -55,5 +76,4 @@ describe Blob do
       config = blob.into_config
     end
   end
-
 end

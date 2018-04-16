@@ -11,11 +11,15 @@ module Transactions
       super @config
     end
 
+    # DO NOT USE. This is for deserialization
+    def initialize(@committed : Bool, @config : Config, @identity : Identity, @filename : String)
+    end
+
     def commit
       super
 
       contents = File.read(@filename)
-      @config.add @filename, contents
+      @config.not_nil!.add @filename, contents
     rescue FileAlreadyInConfig
       raise FileAlreadyInConfig.new
     rescue e
@@ -27,7 +31,7 @@ module Transactions
     end
 
     def revert
-      @config.delete @filename
+      @config.not_nil!.delete @filename
       super
     rescue
       raise TransactionFailedUngracefully.new
