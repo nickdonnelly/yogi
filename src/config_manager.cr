@@ -87,6 +87,7 @@ class ConfigManager
     transaction = AddNewFileTransaction.new File.expand_path(filepath), @current_config
     transaction.commit
     @current_config = transaction.finalize
+    @blob_fetcher.not_nil!.write_transaction transaction, @current_config
   end
 
   def remove_from_current(filepath : String)
