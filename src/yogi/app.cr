@@ -1,5 +1,6 @@
 require "./show"
 require "./add"
+require "./remove"
 
 require "commander"
 
@@ -22,21 +23,10 @@ module Yogi
         end
       end
 
-      cmd.commands.add do|add|
-        add.use = "add"
-        add.long = "add a file or list of files to the current configuration"
-        add.flags.add do |config_flag|
-          config_flag.name = "config"
-          config_flag.short = "-c"
-          config_flag.long = "--config"
-          config_flag.default = "current" 
-          config_flag.description = "specify a configuration other than the current one \
-            to add files to."
-        end
-        add.run do |options, args|
-          add(options, args)
-        end
-      end
+      cmd.commands.add get_add_command("a")
+      cmd.commands.add get_add_command("add")
+      cmd.commands.add get_remove_command("r") 
+      cmd.commands.add get_remove_command("remove") 
     end
 
     cli
@@ -44,5 +34,39 @@ module Yogi
 
   def self.capture_command(&block)
     block
+  end
+
+  def self.get_add_command(use : String) : Commander::Command
+    add = Commander::Command.new(true)
+    add.use = use
+    add.long = "add a file or list of files (space delimited) to the current config"
+    add.short = add.long
+    add.flags.add get_config_flag
+    add.run do |options, args|
+      add(options, args)
+    end
+    add
+  end
+
+  def self.get_remove_command(use : String) : Commander::Command
+    remove = Commander::Command.new(true)
+    remove.use = use
+    remove.long = "remove a file or list of files (space delimited) from the current config"
+    remove.short = remove.long
+    remove.flags.add get_config_flag
+    remove.run do |options, args|
+      remove(options, args)
+    end
+    remove
+  end
+
+  def self.get_config_flag : Commander::Flag
+    config_flag = Commander::Flag.new
+    config_flag.name = "config"
+    config_flag.short = "-c"
+    config_flag.long = "--config"
+    config_flag.default = "current" 
+    config_flag.description = "specify a configuration other than the current one."
+    config_flag
   end
 end

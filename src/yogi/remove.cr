@@ -7,8 +7,8 @@ require "commander"
 require "colorize"
 
 module Yogi
-  
-  def self.add(options : Commander::Options, arguments : Array(String))
+
+  def self.remove(options : Commander::Options, arguments : Array(String))
     manager = ConfigManager.new
     manager.load_disk_data File.expand_path("~/.yogi/blobs")
     
@@ -16,28 +16,27 @@ module Yogi
       puts "you must provide a file or list of files".colorize.red
       exit(-1)
     else
-
       if options.string["config"] != "current"
-        add_to manager, options.string["config"], arguments
+        remove_from manager, options.string["config"], arguments
       else
-        add_to manager, manager.current_config_name, arguments
+        remove_from manager, manager.current_config_name, arguments
       end
     end
   end
 
-  private def self.add_to(manager : ConfigManager, config_name : String, files : Array(String))
+  def self.remove_from(manager : ConfigManager, config_name : String, files : Array(String))
     config = manager.try_get_by_name config_name
     manager.set_current config.not_nil!
 
     files.each do |filename|
       begin
-        manager.add_to_current filename
+        manager.remove_from_current filename
         puts "added #{filename.colorize.yellow} to #{manager.current_config_name.colorize.blue}"
       rescue Transactions::InvalidTransactionError
-        puts "add transaction failed for file #{filename.colorize.red}, cancelling"
+        puts "remove transaction failed for file #{filename.colorize.red}, cancelling"
         exit(-1)
-      rescue FileAlreadyInConfig
-        puts "file #{filename.colorize.red} already in \
+      rescue FileNotInConfig 
+        puts "file #{filename.colorize.red} not found in \
           #{manager.current_config_name.colorize.blue}, skipping"
       end
     end

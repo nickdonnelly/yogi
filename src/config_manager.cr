@@ -85,6 +85,12 @@ class ConfigManager
     @current_config = transaction.finalize
   end
 
+  def remove_from_current(filepath : String)
+    transaction = RemoveFileTransaction.new File.expand_path(filepath), @current_config
+    transaction.commit
+    @current_config = transaction.finalize
+  end
+
   def current_contains?(filepath : String) : Bool
     @current_config.contains? filepath
   end
