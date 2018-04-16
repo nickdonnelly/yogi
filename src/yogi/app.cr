@@ -25,6 +25,14 @@ module Yogi
       cmd.commands.add do|add|
         add.use = "add"
         add.long = "add a file or list of files to the current configuration"
+        add.flags.add do |config_flag|
+          config_flag.name = "config"
+          config_flag.short = "-c"
+          config_flag.long = "--config"
+          config_flag.default = "current" 
+          config_flag.description = "specify a configuration other than the current one \
+            to add files to."
+        end
         add.run do |options, args|
           add(options, args)
         end

@@ -33,7 +33,7 @@ class Config
   end
 
   def add(file : Filemember)
-    if contains?(filename)
+    if contains?(file.filename)
       raise FileAlreadyInConfig.new
     end
     @files << file
