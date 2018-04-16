@@ -23,13 +23,16 @@ module Yogi
         rescue Transactions::InvalidTransactionError
           puts "add transaction failed for #{filename.colorize.red}, cancelling"
           exit(-1)
+        rescue FileAlreadyInConfig
+          puts "file #{filename.colorize.red} already in \
+            #{manager.current_config_name.colorize.blue}, skipping"
         end
       end
       
       begin
         manager.write_current!
       rescue IO::Error
-        puts "couldn't write blob to disk!".colorize.red
+        puts "couldn't write blob to disk! changes are not saved".colorize.red
         exit(-1)
       end
     end

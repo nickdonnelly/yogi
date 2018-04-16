@@ -26,10 +26,16 @@ class Config
   end
 
   def add(filename : String, contents : String)
+    if contains?(filename)
+      raise FileAlreadyInConfig.new
+    end
     @files << Filemember.new filename, contents
   end
 
   def add(file : Filemember)
+    if contains?(filename)
+      raise FileAlreadyInConfig.new
+    end
     @files << file
   end
 
@@ -124,4 +130,7 @@ class InvalidConfigurationName < Exception
 end
 
 class FileNotInConfig < Exception
+end
+
+class FileAlreadyInConfig < Exception
 end

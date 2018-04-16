@@ -16,6 +16,8 @@ module Transactions
 
       contents = File.read(@filename)
       @config.add @filename, contents
+    rescue FileAlreadyInConfig
+      raise FileAlreadyInConfig.new
     rescue e
       if !e.is_a?(DoubleCommitError)
         revert
