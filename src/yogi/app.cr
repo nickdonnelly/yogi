@@ -1,4 +1,5 @@
 require "./show"
+require "./add"
 
 require "commander"
 
@@ -19,7 +20,14 @@ module Yogi
         list_current.run do |options, args|
           show(options, args)
         end
+      end
 
+      cmd.commands.add do|add|
+        add.use = "add"
+        add.long = "add a file or list of files to the current configuration"
+        add.run do |options, args|
+          add(options, args)
+        end
       end
     end
 

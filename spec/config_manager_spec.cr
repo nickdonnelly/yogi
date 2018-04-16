@@ -41,6 +41,13 @@ describe ConfigManager do
     manager.current_contains?("./test_blobs/files/test_1.txt").should be_true
   end
 
+  it "contains the right files after deserialization" do
+    manager.activate_by_name "test_config2"
+    manager.current_contains?("./test_blobs/files/test_11.txt").should be_true
+    manager.current_contains?("./test_blobs/files/test_22.txt").should be_true
+    manager.current_contains?("./test_blobs/files/test_33.txt").should be_true
+  end
+
   context "#load_disk_data" do
     it "should load the current config name" do
       manager.load_disk_data "./test_blobs"

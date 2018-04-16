@@ -32,6 +32,7 @@ module Yogi
   end
 
   private def self.print_individual_config(manager : ConfigManager, config_name : String)
+    manager.load_disk_data
     config = if config_name == "current" 
                config_name = manager.current_config.name
                manager.current_config

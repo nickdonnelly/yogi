@@ -29,9 +29,11 @@ class ConfigManager
     @config_directory = blob_directory
   end
 
-  def load_disk_data(blob_directory : String)
-    set_blob_dir blob_directory
-    @current_config_name = get_current_name blob_directory
+  def load_disk_data(blob_directory : String | Nil = nil)
+    if !blob_directory.nil?
+      set_blob_dir blob_directory
+    end
+    @current_config_name = get_current_name @config_directory 
     @current_config = get_by_name @current_config_name
     @config_ready = true
   rescue
@@ -72,8 +74,13 @@ class ConfigManager
     list
   end
 
+  # This method will fail if the blob_fetcher has not been initialized.
+  def write_current!
+    @blob_fetcher.not_nil!.write_config_blob @current_config
+  end
+
   def add_to_current(filepath : String)
-    transaction = AddNewFileTransaction.new filepath, @current_config
+    transaction = AddNewFileTransaction.new File.expand_path(filepath), @current_config
     transaction.commit
     @current_config = transaction.finalize
   end
@@ -94,7 +101,7 @@ class ConfigManager
 
   private def get_current_name(directory : String) : String
     File.read("#{directory}/current_config").strip
-  rescue IO::Error
+  rescue
     "default"
   end
 end

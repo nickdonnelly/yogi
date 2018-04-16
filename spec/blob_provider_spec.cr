@@ -26,7 +26,6 @@ describe BlobProvider do
 
 end
 
-
 describe Blob do
   it "can be created from a config" do
     blob = Blob.from_config Config.new("test_name")
