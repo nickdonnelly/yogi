@@ -64,6 +64,10 @@ class ConfigManager
     @config_ready
   end
 
+  def config_exists?(name : String) : Bool
+    File.file?("#{@config_directory}/#{name}.blob")
+  end
+
   def get_config_list : Array(String)
     list = [] of String
     Dir.entries(@config_directory).each do |entry|

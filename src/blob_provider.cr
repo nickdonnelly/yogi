@@ -22,6 +22,13 @@ class BlobProvider
     end
   end
 
+  def remove_blob(name : String)
+    if !File.file?("#{@directory}/#{name}.blob")
+      raise BlobDoesntExistError.new
+    end
+    File.delete("#{@directory}/#{name}.blob")
+  end
+
   def config_from_blob(blob_name : String) : Config
     blob_location = "#{@directory}/#{blob_name}.blob"
 

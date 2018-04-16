@@ -1,6 +1,8 @@
 require "./show"
 require "./add"
 require "./remove"
+require "./new"
+require "./delete"
 
 require "commander"
 
@@ -27,6 +29,24 @@ module Yogi
       cmd.commands.add get_add_command("add")
       cmd.commands.add get_remove_command("r") 
       cmd.commands.add get_remove_command("remove") 
+
+      cmd.commands.add do |new_config|
+        new_config.use = "new [name]"
+        new_config.long = "create a new named config (does not switch to the config)"
+        new_config.short = new_config.long
+        new_config.run do |_, args|
+          new_config(args)
+        end
+      end
+
+      cmd.commands.add do |delete_config|
+        delete_config.use = "delete [name]"
+        delete_config.long = "delete a config by name"
+        delete_config.short = delete_config.long
+        delete_config.run do |_, args|
+          delete_config(args)
+        end
+      end
     end
 
     cli
