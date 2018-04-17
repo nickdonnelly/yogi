@@ -45,10 +45,9 @@ module Yogi
     end
     config = config.not_nil!
 
-    puts "Name: #{config_name.colorize.blue}"
-    puts "Revision: #{config.latest_commit[0].shortened.colorize.yellow} \
-      - #{config.latest_commit[1].colorize.green}"
-    puts "Current configuration contains the following files:"
+    puts "name: #{config_name.colorize.blue}"
+    puts "latest revision: #{print_commit config.latest_commit}"
+    puts "current configuration contains the following files:"
     
     if config.files.size == 0
       puts "<no files>".colorize.yellow

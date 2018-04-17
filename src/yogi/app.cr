@@ -25,6 +25,14 @@ module Yogi
       cmd.commands.add get_add_command("add")
       cmd.commands.add get_remove_command("r") 
       cmd.commands.add get_remove_command("remove") 
+      cmd.commands.add do |changes|
+        changes.use = "changes"
+        changes.long = "list the on disk changes from the current config"
+        changes.short = changes.long
+        changes.run do |options, args|
+          changes_command(options, args)
+        end
+      end
 
       cmd.commands.add do |new_config|
         new_config.use = "new [name]"

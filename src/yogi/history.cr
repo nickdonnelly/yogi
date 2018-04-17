@@ -31,13 +31,7 @@ module Yogi
     end
 
     config.commit_identities.last(max).reverse.each do |commit|
-      if commit[1].starts_with? "add"
-        puts "#{commit[0].shortened.colorize.yellow} - #{commit[1].colorize.green}"
-      elsif commit[1].starts_with? "edit"
-        puts "#{commit[0].shortened.colorize.yellow} - #{commit[1].colorize.blue}"
-      else
-        puts "#{commit[0].shortened.colorize.yellow} - #{commit[1].colorize.red}"
-      end
+      puts print_commit(commit)
     end
   end
 end

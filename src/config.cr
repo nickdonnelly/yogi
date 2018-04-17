@@ -41,8 +41,7 @@ class Config
   end
 
   def get_identity : Identity
-    #@commits.last.identity
-    Identity.new
+    @commit_identities.last.identity
   rescue
     Identity.new
   end
