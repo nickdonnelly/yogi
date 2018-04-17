@@ -86,14 +86,21 @@ class ConfigManager
   def add_to_current(filepath : String)
     transaction = AddNewFileTransaction.new File.expand_path(filepath), @current_config
     transaction.commit
-    @current_config = transaction.finalize
+    set_current(transaction.finalize)
     @blob_fetcher.not_nil!.write_transaction transaction, @current_config
   end
 
   def remove_from_current(filepath : String)
     transaction = RemoveFileTransaction.new File.expand_path(filepath), @current_config
     transaction.commit
-    @current_config = transaction.finalize
+    set_current(transaction.finalize)
+    @blob_fetcher.not_nil!.write_transaction transaction, @current_config
+  end
+
+  def update_current(filepath : String)
+    transaction = EditFileTransaction.new File.expand_path(filepath), @current_config
+    transaction.commit
+    set_current(transaction.finalize)
     @blob_fetcher.not_nil!.write_transaction transaction, @current_config
   end
 

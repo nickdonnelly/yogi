@@ -25,6 +25,8 @@ module Yogi
       cmd.commands.add get_add_command("add")
       cmd.commands.add get_remove_command("r") 
       cmd.commands.add get_remove_command("remove") 
+      cmd.commands.add get_update_command("u") 
+      cmd.commands.add get_update_command("update") 
       cmd.commands.add do |changes|
         changes.use = "changes"
         changes.long = "list the on disk changes from the current config"
@@ -92,6 +94,18 @@ module Yogi
       add_command(options, args)
     end
     add
+  end
+
+  def self.get_update_command(use : String) : Commander::Command
+    update = Commander::Command.new(true)
+    update.use = use
+    update.long = "update a file, list of files, or all files that have changed on disk"
+    update.short = update.long
+    update.flags.add get_config_flag
+    update.run do |options, args|
+      update_file(options, args)
+    end
+    update
   end
 
   def self.get_remove_command(use : String) : Commander::Command
