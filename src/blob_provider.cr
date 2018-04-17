@@ -33,7 +33,7 @@ class BlobProvider
   def config_from_blob(blob_name : String) : Config
     blob_location = "#{@directory}/#{blob_name}.blob"
 
-    if !File.exists?(blob_location)
+    if !File.file?(blob_location)
       raise BlobDoesntExistError.new
     end
 
@@ -41,6 +41,18 @@ class BlobProvider
     blob.into_config
   rescue
     raise DeserializationDataInvalidError.new
+  end
+
+  def transaction_from_blob(config_name : String, identity : Tuple(Identity, String)) : Transaction
+    shortened_hash = identity[0].shortened
+    blob_location = "#{@directory}/#{config_name}/#{shortened_hash}.blob"
+
+    if !File.file? blob_location
+      raise BlobDoesntExistError.new
+    end
+
+    blob = Blob.from_file blob_location
+    blob.into_transaction identity[1]
   end
 
   def write_config_blob(config : Config) : Bool
@@ -136,6 +148,18 @@ struct Blob
     decoded
   rescue
     raise DeserializationDataInvalidError.new
+  end
+  
+  def into_transaction(description : String) : Transaction
+    io = IO::Memory.new @bytes
+    if description.starts_with? "add"
+      return Cannon.decode io, AddNewFileTransaction
+    elsif description.starts_with? "edit"
+      return Cannon.decode io, EditFileTransaction
+    elsif description.starts_with? "remove"
+      return Cannon.decode io, RemoveFileTransaction
+    end
+    raise UnknownTransactionType.new
   end
 
   def write(blob_location : String)

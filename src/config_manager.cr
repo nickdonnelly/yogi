@@ -84,6 +84,10 @@ class ConfigManager
     @blob_fetcher.not_nil!.write_config_blob @current_config
   end
 
+  def write!(config : Config)
+    @blob_fetcher.not_nil!.write_config_blob config
+  end
+
   def add_to_current(filepath : String)
     transaction = AddNewFileTransaction.new File.expand_path(filepath), @current_config
     transaction.commit

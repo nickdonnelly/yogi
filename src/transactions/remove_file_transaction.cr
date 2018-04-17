@@ -11,7 +11,7 @@ module Transactions
     end
 
     # DO NOT USE. this is for deserialization.
-    def initialize(@committed : Bool, @config : Config, @identity : Identity,
+    def initialize(@committed : Bool, @config : Config | Nil, @identity : Identity,
                    @file : Filemember | Nil, @filename : String)
     end
 
@@ -24,9 +24,13 @@ module Transactions
     def revert
       super
       if @file.nil?
+        puts "nil"
         return
       end
+
       @config.not_nil!.add @file.not_nil!
+    rescue
+      raise TransactionFailedUngracefully.new
     end
 
     def message

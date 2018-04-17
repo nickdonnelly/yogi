@@ -39,6 +39,17 @@ module Yogi
         end
       end
 
+      cmd.commands.add do |revert|
+        revert.use = "revert"
+        revert.short = "revert the given change, in isolation, for the current config"
+        revert.long = "revert the given change, in isolation for the current config. \
+          note that if the config doesn't contain a file that was edited, it will be re-added. \
+          this command also re-activates the current config, so should be used with caution."
+        revert.run do |options, args|
+          revert_command(options, args)
+        end
+      end
+
       cmd.commands.add do |new_config|
         new_config.use = "new [name]"
         new_config.long = "create a new named config (does not switch to the config)"

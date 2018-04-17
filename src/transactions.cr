@@ -43,6 +43,10 @@ module Transactions
       @config.not_nil!.add_transaction self
       @config.not_nil!
     end
+    
+    def finalize_without_transaction : Config
+      @config.not_nil!
+    end
 
     # Returns a *cloned* version of the transacation without the config.
     def without_config : self

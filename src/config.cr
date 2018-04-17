@@ -97,6 +97,16 @@ class Config
     f.not_nil!
   end
 
+  def revert_commit(commit_hash : String) : Config
+    @commit_identities.each_with_index do |ident, index|
+      if commit_hash == ident[0].shortened
+        @commit_identities.delete_at(index, 1)
+        return revert ident
+      end
+    end
+    raise CommitNotFoundError.new
+  end
+
   # Checks for on-disk changes to the files.
   def has_changes? : Bool
     @files.each do |filemem|
@@ -149,6 +159,14 @@ class Config
     end
   end
 
+  private def revert(identity : Tuple(Identity, String)) : Config
+    provider = BlobProvider.new File.expand_path("~/.yogi/blobs")
+    commit_transaction = provider.transaction_from_blob(@name, identity)
+    commit_transaction.set_config(self.clone)
+    commit_transaction.revert
+    commit_transaction.finalize_without_transaction
+  end
+
 end
 
 struct Filemember
@@ -170,6 +188,9 @@ class UnknownTransactionType < Exception
 end
 
 class FileNotInConfig < Exception
+end
+
+class CommitNotFoundError < Exception
 end
 
 class FileAlreadyInConfig < Exception
