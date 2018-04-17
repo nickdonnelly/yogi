@@ -50,6 +50,7 @@ class ConfigManager
     config = get_by_name name
     @current_config.deactivate!
     config.activate!
+    File.write("#{@config_directory}/current_config", config.name)
     set_current config
     @config_ready = true
   rescue e

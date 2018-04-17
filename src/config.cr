@@ -97,6 +97,16 @@ class Config
     f.not_nil!
   end
 
+  # Checks for on-disk changes to the files.
+  def has_changes? : Bool
+    @files.each do |filemem|
+      if !File.file?(filemem.filename) || File.read(filemem.filename) != filemem.content
+        return true
+      end
+    end
+    false
+  end
+
   def deactivate!
     @files.each do |filemem|
       begin

@@ -55,6 +55,12 @@ describe Config do
       f.should_not be_nil
       conf.files.size.should eq 0
     end
+
+    it "should be able to detect changes on the disk" do
+      conf = Config.new "some_name"
+      conf.add "./test_blobs/files/test_1.txt", "abcd" # this isn't in that file
+      conf.has_changes?.should be_true
+    end
   end
 
   context "transactions" do

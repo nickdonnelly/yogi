@@ -15,12 +15,15 @@ module Yogi
 
       cmd.commands.add do |list_current|
         list_current.use = "show"
-        list_current.long = "print the given configuration"
+        list_current.long = "print the given configuration or a list of all configurations"
+        list_current.short = list_current.long
         list_current.run do |options, args|
           show_command(options, args)
         end
       end
 
+      cmd.commands.add get_switch_command("s")
+      cmd.commands.add get_switch_command("switch")
       cmd.commands.add get_add_command("a")
       cmd.commands.add get_add_command("add")
       cmd.commands.add get_remove_command("r") 
@@ -118,6 +121,17 @@ module Yogi
       remove(options, args)
     end
     remove
+  end
+
+  def self.get_switch_command(use : String) : Commander::Command
+    switch = Commander::Command.new(true)
+    switch.use = use
+    switch.long = "switch to the given config"
+    switch.short = switch.long
+    switch.run do |options, args|
+      activate_command(options, args)
+    end
+    switch
   end
 
   def self.get_config_flag : Commander::Flag

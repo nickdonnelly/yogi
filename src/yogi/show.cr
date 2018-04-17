@@ -9,7 +9,7 @@ module Yogi
   
   def self.show_command(options : Commander::Options, arguments : Array(String))
     manager = ConfigManager.new
-    manager.set_blob_dir File.expand_path("~/.yogi/blobs")
+    manager.load_disk_data File.expand_path("~/.yogi/blobs")
     
     if arguments.size == 0
       print_configs manager
@@ -32,7 +32,6 @@ module Yogi
   end
 
   private def self.print_individual_config(manager : ConfigManager, config_name : String)
-    manager.load_disk_data
     config = if config_name == "current" 
                config_name = manager.current_config.name
                manager.current_config
