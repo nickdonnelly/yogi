@@ -7,13 +7,13 @@
 
 ## Installation
 
-There are binaries [here](https://gitlab.com/nickdonnelly/yogi/tags). Simply extract the tarball and put the binary in `/usr/local/bin`:
+There are binaries [here](https://gitlab.com/nickdonnelly/yogi/-/archive/release-0.1.0/yogi-release-0.1.0.zip). Simply extract the zip and put the binary in `/usr/local/bin`:
 
 ```bash
 
-tar -xvf yogi.tar.gz
-sudo mv ./yogi /usr/local/bin
-rm yogi.tar.gz
+unzip yogi-release-0.1.0.zip
+sudo mv ./yogi-release-0.1.0/yogi /usr/local/bin
+rm -rf yogi.tar.gz yogi-release-0.1.0
 
 ```
 
