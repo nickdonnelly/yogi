@@ -30,10 +30,10 @@ Yogi comes with some rudimentary version control. Whenever you add, remove, or c
 
 ### Examples
 
-![example-1][https://i.imgur.com/Tfmjkrl.png]
-![example-2][https://i.imgur.com/0tJezkF.png]
+![example-1](https://i.imgur.com/Tfmjkrl.png)
+![example-2](https://i.imgur.com/0tJezkF.png)
 
-![example-revert][https://i.imgur.com/Z6NVRfR.png]
+![example-revert](https://i.imgur.com/Z6NVRfR.png)
 
 
 ## Running tests
