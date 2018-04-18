@@ -45,6 +45,14 @@ module Yogi
         revert.long = "revert the given change, in isolation for the current config. \
           note that if the config doesn't contain a file that was edited, it will be re-added. \
           this command also re-activates the current config, so should be used with caution."
+        revert.flags.add do |last|
+          last.name = "last"
+          last.short = "-l"
+          last.long = "--last"
+          last.description = "pass this instead of arguments to revert \
+            the most recently applied commit."
+          last.default = false
+        end
         revert.run do |options, args|
           revert_command(options, args)
         end
