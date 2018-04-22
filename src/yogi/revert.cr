@@ -9,9 +9,11 @@ module Yogi
   def self.revert_command(options : Commander::Options, arguments : Array(String))
     if arguments.size != 1 && !options.bool["last"]
       puts "please only provide 1 argument: the commit number of the change to revert".colorize.red
+      puts
       exit -1
     elsif arguments.size > 0 && options.bool["last"]
       puts "you can't provide arguments when --last is passed".colorize.red
+      puts
       exit -1
     end
 
@@ -30,11 +32,14 @@ module Yogi
     manager.activate_by_name new_conf.name
     puts "reverted commit #{commit_hash.colorize.yellow}".colorize.green
     puts "reactivated config '#{manager.current_config.name.colorize.yellow}'".colorize.green
+    puts
   rescue CommitNotFoundError
     puts "could not find commit #{commit_hash.colorize.yellow}".colorize.red
+    puts
     exit -1
   rescue
     puts "error occurred while reverting commit".colorize.red
+    puts
     exit -1
   end
 end

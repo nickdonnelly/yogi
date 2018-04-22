@@ -34,6 +34,7 @@ module Yogi
       puts "<no changes found for #{manager.@current_config.name.colorize.blue}\
           #{">".colorize.yellow}".colorize.yellow
     end
+    puts
   end
 
 end

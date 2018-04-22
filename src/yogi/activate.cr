@@ -12,6 +12,7 @@ module Yogi
     manager.load_disk_data File.expand_path("~/.yogi/blobs")
     if arguments.size > 1
       puts "only provide 1 argument: the name of the config to switch to".colorize.red
+      puts
       exit -1
     end
     
@@ -27,14 +28,18 @@ module Yogi
     end
 
     manager.activate_by_name config_name
+    puts
   rescue ConfigFetchError
     puts "couldn't fetch config with name #{config_name.colorize.blue}".colorize.red
+    puts
     exit -1
   rescue ConfigActivationFailure
     puts "couldn't activate config #{config_name.colorize.blue}".colorize.red
+    puts
     exit -1
   rescue
     puts "an unknown error occurred".colorize.red
+    puts
     exit -1
   end
 end

@@ -14,6 +14,7 @@ module Yogi
     
     if arguments.size == 0
       puts "you must provide a file or list of files".colorize.red
+      puts
       exit(-1)
     else
       if options.string["config"] != "current"
@@ -43,13 +44,16 @@ module Yogi
     
     begin
       manager.write_current!
+      puts
     rescue IO::Error
       puts "couldn't write blob to disk! changes are not saved".colorize.red
+      puts
       exit(-1)
     end
     
   rescue 
     puts "couldn't fetch config with name #{config_name.colorize.red}"
+      puts
   end
 
 end

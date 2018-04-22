@@ -21,17 +21,20 @@ module Yogi
     end
   rescue
     puts "could not fetch config '#{config_name}'".colorize.red
+    puts
     exit -1
   end
 
   private def self.print_history(config : Config, max : Int32 | Int64)
     if config.commit_identities.size == 0
       puts "<no commit history>".colorize.yellow
+      puts
       exit 0
     end
 
     config.commit_identities.last(max).reverse.each do |commit|
       puts print_commit(commit)
     end
+    puts
   end
 end

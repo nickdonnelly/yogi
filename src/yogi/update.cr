@@ -25,6 +25,7 @@ module Yogi
 
   rescue
     puts "could not fetch config with name #{config_name}".colorize.red
+    puts
     exit -1
   end
 
@@ -51,6 +52,7 @@ module Yogi
         end
       end
     end
+    puts
   end
 
   def self.update(args : Array(String), manager : ConfigManager)
@@ -80,6 +82,7 @@ module Yogi
       end
 
     end
+    puts
   end
 
   private def self.not_in_config_msg(filename : String, config_name : String) : String

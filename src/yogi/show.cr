@@ -29,6 +29,7 @@ module Yogi
         puts "> #{config_name}"
       end
     end
+    puts
   end
 
   private def self.print_individual_config(manager : ConfigManager, config_name : String)
@@ -60,8 +61,10 @@ module Yogi
     config.files.each do |filemem|
       puts "  #{filemem.filename.colorize.green} "
     end
+    puts
   rescue ConfigFetchError
     puts not_found
+    puts
   end
 
 end

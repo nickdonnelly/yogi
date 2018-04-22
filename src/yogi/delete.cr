@@ -8,6 +8,7 @@ module Yogi
   def self.delete_config(arguments : Array(String))
     if arguments.size != 1
       puts "you can only provide 1 argument: the name of a config".colorize.red
+      puts
       exit -1
     end
     
@@ -27,8 +28,10 @@ module Yogi
 
     blob_provider.remove_blob name
     puts "successfully deleted config #{name.colorize.blue}"
+    puts
   rescue BlobDoesntExistError
     puts "could not find config blob with name #{name}".colorize.red
+    puts
     exit -1
   end
 
